@@ -1,5 +1,7 @@
 package com.example.RestApi.service;
 
+import com.example.RestApi.dto.DepartmentDTO;
+import com.example.RestApi.dto.DepartmentSummaryDTO;
 import com.example.RestApi.exception.ResourceNotFoundException;
 import com.example.RestApi.model.Department;
 import com.example.RestApi.repository.DepartmentRepository;
@@ -7,6 +9,7 @@ import com.example.RestApi.repository.DepartmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +24,7 @@ class DepartmentServiceImplTest {
     private DepartmentServiceImpl departmentService;
 
     private Department department;
+    private DepartmentDTO departmentDTO;
 
     @BeforeEach
     void setUp() {
@@ -29,27 +33,31 @@ class DepartmentServiceImplTest {
         department = new Department();
         department.setId(1L);
         department.setName("IT");
+
+        departmentDTO = new DepartmentDTO();
+        departmentDTO.setName("IT");
     }
 
     @Test
     void testCreateDepartment() {
-        when(departmentRepo.save(department)).thenReturn(department);
+        when(departmentRepo.save(any(Department.class))).thenReturn(department);
 
-        Department result = departmentService.create(department);
+        DepartmentSummaryDTO result = departmentService.create(departmentDTO);
 
         assertNotNull(result);
+        assertEquals(1L, result.getId());
         assertEquals("IT", result.getName());
-        verify(departmentRepo, times(1)).save(department);
+        verify(departmentRepo, times(1)).save(any(Department.class));
     }
 
     @Test
     void testGetAllDepartments() {
-        List<Department> departments = Arrays.asList(department);
-        when(departmentRepo.findAll()).thenReturn(departments);
+        when(departmentRepo.findAll()).thenReturn(List.of(department));
 
-        List<Department> result = departmentService.getAll();
+        List<DepartmentSummaryDTO> result = departmentService.getAll();
 
         assertEquals(1, result.size());
+        assertEquals("IT", result.get(0).getName());
         verify(departmentRepo, times(1)).findAll();
     }
 
@@ -57,7 +65,7 @@ class DepartmentServiceImplTest {
     void testGetDepartmentById_Found() {
         when(departmentRepo.findById(1L)).thenReturn(Optional.of(department));
 
-        Department result = departmentService.getById(1L);
+        DepartmentDTO result = departmentService.getById(1L);
 
         assertNotNull(result);
         assertEquals("IT", result.getName());
@@ -73,34 +81,46 @@ class DepartmentServiceImplTest {
 
     @Test
     void testUpdateDepartment_Found() {
-        Department updated = new Department();
-        updated.setName("HR");
+        DepartmentDTO updatedDTO = new DepartmentDTO();
+        updatedDTO.setName("HR");
+
+        Department updatedDepartment = new Department();
+        updatedDepartment.setId(1L);
+        updatedDepartment.setName("HR");
 
         when(departmentRepo.findById(1L)).thenReturn(Optional.of(department));
-        when(departmentRepo.save(any(Department.class))).thenReturn(department);
+        when(departmentRepo.save(any(Department.class))).thenReturn(updatedDepartment);
 
-        Department result = departmentService.update(1L, updated);
+        DepartmentDTO result = departmentService.update(1L, updatedDTO);
 
         assertEquals("HR", result.getName());
-        verify(departmentRepo).save(department);
+        verify(departmentRepo).save(any(Department.class));
     }
 
     @Test
     void testUpdateDepartment_NotFound() {
         when(departmentRepo.findById(1L)).thenReturn(Optional.empty());
 
-        Department updated = new Department();
-        updated.setName("HR");
+        DepartmentDTO updatedDTO = new DepartmentDTO();
+        updatedDTO.setName("HR");
 
-        assertThrows(RuntimeException.class, () -> departmentService.update(1L, updated));
+        assertThrows(ResourceNotFoundException.class, () -> departmentService.update(1L, updatedDTO));
     }
 
     @Test
     void testDeleteDepartment() {
+        when(departmentRepo.existsById(1L)).thenReturn(true);
         doNothing().when(departmentRepo).deleteById(1L);
 
         departmentService.delete(1L);
 
         verify(departmentRepo).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteDepartment_NotFound() {
+        when(departmentRepo.existsById(99L)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> departmentService.delete(99L));
     }
 }

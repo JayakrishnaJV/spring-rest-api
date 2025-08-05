@@ -1,13 +1,21 @@
 package com.example.RestApi.service;
 
+import com.example.RestApi.dto.DepartmentDTO;
+import com.example.RestApi.dto.DepartmentSummaryDTO;
 
-import com.example.RestApi.model.Department;
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 public interface DepartmentService {
-    Department create(Department department);
-    List<Department> getAll();
-    Department getById(Long id);
-    Department update(Long id, Department department);
+
+    DepartmentSummaryDTO create(@Valid DepartmentDTO deptDto);
+
+    List<DepartmentSummaryDTO> getAll();
+
+    DepartmentDTO getById(Long id);
+
+    DepartmentDTO update(Long id, @Valid DepartmentDTO deptDto);
+
     void delete(Long id);
 }
