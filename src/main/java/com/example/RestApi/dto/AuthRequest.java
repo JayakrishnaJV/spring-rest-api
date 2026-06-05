@@ -1,6 +1,5 @@
 package com.example.RestApi.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
 
 @Data

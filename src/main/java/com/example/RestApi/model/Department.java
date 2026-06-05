@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 @Entity
 @Data // Includes @Getter, @Setter, @ToString, @EqualsAndHashCode
 @NoArgsConstructor

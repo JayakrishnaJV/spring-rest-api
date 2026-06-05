@@ -166,8 +166,10 @@ class EmployeeServiceImplTest {
         // Arrange
         Page<Employee> employeePage = new PageImpl<>(List.of(emp));
 
+        @SuppressWarnings("unchecked")
+        Specification<Employee> spec = any(Specification.class);
         when(employeeRepository.findAll(
-                any(Specification.class),
+                spec,
                 any(PageRequest.class)))
             .thenReturn(employeePage);
 
@@ -185,8 +187,10 @@ class EmployeeServiceImplTest {
         // Arrange
         Page<Employee> employeePage = new PageImpl<>(List.of(emp));
 
+        @SuppressWarnings("unchecked")
+        Specification<Employee> spec = any(Specification.class);
         when(employeeRepository.findAll(
-                any(Specification.class),
+                spec,
                 any(PageRequest.class)))
             .thenReturn(employeePage);
 
@@ -204,8 +208,10 @@ class EmployeeServiceImplTest {
         // Arrange
         Page<Employee> employeePage = new PageImpl<>(List.of(emp));
 
+        @SuppressWarnings("unchecked")
+        Specification<Employee> spec = any(Specification.class);
         when(employeeRepository.findAll(
-                any(Specification.class),
+                spec,
                 any(PageRequest.class)))
             .thenReturn(employeePage);
         // Act

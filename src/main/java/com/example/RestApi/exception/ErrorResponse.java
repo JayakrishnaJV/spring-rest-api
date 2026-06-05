@@ -1,9 +1,6 @@
 package com.example.RestApi.exception;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
-import com.example.RestApi.model.Employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
